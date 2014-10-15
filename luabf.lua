@@ -5,7 +5,7 @@
 --------------------------------------------------------
 
 return function(s)
-    local bf, d, p, sp = "[^><%+%-%.,%[%]]+", {}, 1, 1
+    local bf, d, p, sp = "[^><%+%-%.,%[%]]+", setmetatable({}, {__index = function() return 0 end}), 1, 1
     s = s:gsub(bf, "")
 
     while sp <= #s do
@@ -16,16 +16,16 @@ return function(s)
         elseif c == "<" then
             p = p - 1
         elseif c == "+" then
-            if d[p] then d[p] = d[p] + 1 else d[p] = 1 end
+            d[p] = d[p] + 1
         elseif c == "-" then
-            if d[p] then d[p] = d[p] - 1 else d[p] = -1 end
+            d[p] = d[p] - 1
         elseif c == "." then
             io.write(string.char(d[p]))
         elseif c == "," then
             local _c = io.read(1)
             if _c ~= nil then d[p] = _c:byte() end
         elseif c == "[" then
-            if d[p] == 0 or d[p] == nil then
+            if d[p] == 0 then
                 local i = 1
                 while i ~= 0 do
                     sp = sp + 1
@@ -34,7 +34,7 @@ return function(s)
                 end
             end
         elseif c == "]" then
-            if d[p] ~= 0 and d[p] ~= nil then
+            if d[p] ~= 0 then
                 local i = 1
                 while i ~= 0 do
                     sp = sp - 1
